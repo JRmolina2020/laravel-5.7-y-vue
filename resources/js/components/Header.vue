@@ -1,6 +1,13 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" fixed app>
+    <v-navigation-drawer v-model="drawer" fixed app dark>
+      <v-toolbar flat>
+        <v-list>
+          <v-list-tile>
+            <v-list-tile-title class="title">Application</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-toolbar>
       <v-list dense>
         <v-list-tile v-for="item in items" :key="item.title" :to="item.link">
           <v-list-tile-action>
@@ -14,7 +21,6 @@
     </v-navigation-drawer>
     <v-toolbar color="indigo" dark fixed app>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title>GamersBy</v-toolbar-title>
     </v-toolbar>
     <v-content>
       <v-container fluid fill-height>
@@ -33,10 +39,11 @@
 export default {
   data() {
     return {
-      drawer: false,
+      drawer: true,
       items: [
         { title: "Home", icon: "dashboard", link: "/" },
-        { title: "Categoria", icon: "question_answer", link: "/categoria" }
+        { title: "Categoria", icon: "question_answer", link: "/categoria" },
+        { title: "Producto", icon: "settings_input_composite", link: "/producto" }
       ],
       right: null
     };

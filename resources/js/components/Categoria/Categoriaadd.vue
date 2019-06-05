@@ -66,6 +66,7 @@ export default {
       }
     };
   },
+
   computed: {
     nombreErrors() {
       const errors = [];

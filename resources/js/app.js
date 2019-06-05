@@ -13,6 +13,7 @@ Vue.component('Home', require('./components/Home.vue').default);
 Vue.component('Spiner', require('./components/Spiner.vue').default);
 Vue.component('Header', require('./components/Header.vue').default);
 Vue.component('Categoria', require('./components/Categoria/Categoria.vue').default);
+Vue.component('Producto', require('./components/Producto/Producto.vue').default);
 const app = new Vue({
     el: '#app',
     store,

@@ -9,7 +9,8 @@ export default new Vuex.Store({
     state: {
         item: [],
         loading: true,
-        urlcategoria: 'Categoria/'
+        urlcategoria: 'Categoria/',
+        urlproducto: 'Producto/'
     },
     mutations: {
         LIST(state, item) {
@@ -28,6 +29,19 @@ export default new Vuex.Store({
                 }).catch(err => {
                     console.log(err)
                 })
+        },
+        Listarproducto({
+            commit,
+            state
+        }) {
+            axios.get(state.urlproducto)
+                .then(res => {
+                    commit('LIST', res.data)
+                    state.loading = false
+                }).catch(err => {
+                    console.log(err)
+                })
+
         },
     }
 })

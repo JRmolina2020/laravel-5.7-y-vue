@@ -23,10 +23,8 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
     </v-toolbar>
     <v-content>
-      <v-container fluid fill-height>
-        <v-layout justify-center>
-          <slot name="contenido"></slot>
-        </v-layout>
+      <v-container>
+        <slot name="contenido"></slot>
       </v-container>
     </v-content>
     <!-- <v-footer color="indigo" app>
@@ -43,7 +41,11 @@ export default {
       items: [
         { title: "Home", icon: "dashboard", link: "/" },
         { title: "Categoria", icon: "question_answer", link: "/categoria" },
-        { title: "Producto", icon: "settings_input_composite", link: "/producto" }
+        {
+          title: "Producto",
+          icon: "settings_input_composite",
+          link: "/producto"
+        }
       ],
       right: null
     };

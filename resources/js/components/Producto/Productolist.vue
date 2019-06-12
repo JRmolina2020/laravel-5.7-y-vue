@@ -16,7 +16,7 @@
                 hide-details
               ></v-text-field>
             </v-card-title>
-            <v-data-table :headers="headers" :items="item" :search="search">
+            <v-data-table :headers="headers" :items="producto" :search="search">
               <template v-slot:items="props">
                 <td class="text-xs-center">{{ props.item.codigo }}</td>
                 <td class="text-xs-center">{{ props.item.nombre }}</td>
@@ -106,7 +106,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["item", "loading"])
+    ...mapState(["producto", "loading"])
   },
   mounted() {
     this.Listar();

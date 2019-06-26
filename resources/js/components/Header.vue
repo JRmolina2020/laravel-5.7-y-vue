@@ -37,7 +37,7 @@
 export default {
   data() {
     return {
-      drawer: true,
+      drawer: false,
       items: [
         { title: "Home", icon: "dashboard", link: "/" },
         { title: "Categoria", icon: "question_answer", link: "/categoria" },

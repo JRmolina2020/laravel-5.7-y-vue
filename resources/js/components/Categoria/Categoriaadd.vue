@@ -4,7 +4,7 @@
       <v-dialog v-model="dialog" persistent max-width="600px">
         <template v-slot:activator="{ on }">
           <div class="text-xs-center">
-            <v-btn round color="primary" dark v-on="on" @click="clear()">Nuevo</v-btn>
+            <v-btn dark v-on="on" @click="clear()" small color="primary">Nuevo</v-btn>
           </div>
         </template>
         <v-form @submit.prevent="Guardar(form.id)" autocomplete="off">
@@ -21,22 +21,29 @@
                 <!-- formulario categoria -->
                 <v-text-field
                   v-model="form.nombre"
-                  :error-messages="nombreErrors"
+                  v-validate.continues="'required|max:10|min:4|alpha'"
                   :counter="10"
-                  label="Categoria"
+                  :error-messages="errors.collect('nombre')"
+                  label="Name"
+                  data-vv-name="nombre"
                   required
-                  @input="$v.form.nombre.$touch()"
-                  @blur="$v.form.nombre.$touch()"
                 ></v-text-field>
+
                 <!-- end formulario categoria -->
               </v-container>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn type="submit" round color="primary" :disabled="$v.$invalid">
+              <v-btn
+                :disabled="!formValidated"
+                class="btn btn-primary"
+                data-dismiss="modal"
+                type="submit"
+              >
                 <h5 v-if="form.id">Editar</h5>
                 <h5 v-else>Guardar</h5>
               </v-btn>
+
               <v-btn round color="error" lat @click="clear()">
                 <h5>SALIR</h5>
               </v-btn>
@@ -48,17 +55,21 @@
   </div>
 </template>
 <script>
-import { validationMixin } from "vuelidate";
-import { required, maxLength, minLength } from "vuelidate/lib/validators";
 export default {
-  validations: {
-    form: {
-      nombre: { required, maxLength: maxLength(10), minLength: minLength(4) }
+  $_veeValidate: {
+    validator: "new"
+  },
+  computed: {
+    formValidated() {
+      return (
+        Object.keys(this.fields).some(key => this.fields[key].validated) &&
+        Object.keys(this.fields).some(key => this.fields[key].valid)
+      );
     }
   },
+
   data() {
     return {
-      errors: [],
       dialog: false,
       form: {
         nombre: "",
@@ -67,39 +78,22 @@ export default {
     };
   },
 
-  computed: {
-    nombreErrors() {
-      const errors = [];
-      if (!this.$v.form.nombre.$dirty) return errors;
-      !this.$v.form.nombre.maxLength &&
-        errors.push("El campo nombre debe contener maximo 10 caracteres.");
-      !this.$v.form.nombre.required &&
-        errors.push("El campo nombre es requerido.");
-      !this.$v.form.nombre.minLength &&
-        errors.push("El campo nombre debe contener minimo 4 caracteres.");
-      return errors;
-    }
-  },
   methods: {
     //Guardar categoria
     Guardar(id) {
       if (id == null) {
-        if (!this.$v.$invalid) {
-          let url = "Categoria";
-          axios
-            .post(url, {
-              nombre: this.form.nombre
-            })
-            .then(response => {
-              this.$store.dispatch("Listarcategoria");
-              this.clear();
-            })
-            .catch(error => {
-              this.errors = error.response.data;
-            });
-        } else {
-          console.log("❌ Invalid form");
-        }
+        let url = "Categoria";
+        axios
+          .post(url, {
+            nombre: this.form.nombre
+          })
+          .then(response => {
+            this.$store.dispatch("Listarcategoria");
+            this.clear();
+          })
+          .catch(error => {
+            this.errors = error.response.data;
+          });
       } else {
         //Editar categoria
         let url = "Categoria/" + id;
@@ -109,6 +103,7 @@ export default {
           Swal.fire("Editar!", "Editado con exito!", "success");
         });
       }
+      this.$validator.validateAll();
     },
     Mostrar(item) {
       this.dialog = true;
@@ -116,10 +111,10 @@ export default {
       this.form.nombre = item.nombre;
     },
     clear() {
-      this.$v.form.$reset();
       this.form.nombre = "";
       this.form.id = null;
       this.dialog = false;
+      this.$validator.reset();
     }
   }
 };

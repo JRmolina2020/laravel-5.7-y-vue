@@ -6,15 +6,15 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        item: [],
+        categoria: [],
         producto: [],
         loading: true,
         urlcategoria: 'Categoria/',
         urlproducto: 'Producto/',
     },
     mutations: {
-        LIST(state, item) {
-            state.item = item;
+        LISTCATEGORIA(state, item) {
+            state.categoria = item;
         },
         LISTPRODUCTO(state, producto) {
             state.producto = producto;
@@ -25,7 +25,7 @@ export default new Vuex.Store({
             axios
                 .get(state.urlcategoria)
                 .then(res => {
-                    commit('LIST', res.data);
+                    commit('LISTCATEGORIA', res.data);
                     state.loading = false;
                 })
                 .catch(err => {

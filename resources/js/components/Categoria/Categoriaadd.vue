@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-layout justify-space-between fill-height>
-      <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-layout align-center justify-center row>
+      <v-dialog v-model="dialog" persistent max-width="350px">
         <template v-slot:activator="{ on }">
           <div class="text-xs-center">
             <v-btn dark v-on="on" @click="clear()" small color="primary">Nuevo</v-btn>
@@ -9,36 +9,34 @@
         </template>
         <v-form @submit.prevent="Guardar(form.id)" autocomplete="off">
           <v-card>
-            <v-card-title>
-              <span class="headline">
-                <h5 v-if="form.id" class="font-weight-thin.font-italic">Actualizar categoria</h5>
-                <h5 v-else class="font-weight-thin.font-italic">Agregar Categoria</h5>
-              </span>
-              <!-- <h1>{{ form.id }}</h1> -->
-            </v-card-title>
+            <v-toolbar card class="info" :class="{'warning':form.id}" dense dark>
+              <h3 v-if="form.id">Editar categoria</h3>
+              <h3 v-else>Guardar categoria</h3>
+              <v-spacer></v-spacer>
+            </v-toolbar>
             <v-card-text>
               <v-container grid-list-md>
                 <!-- formulario categoria -->
                 <v-text-field
                   v-model="form.nombre"
-                  v-validate.continues="'required|max:10|min:4|alpha'"
-                  :counter="10"
+                  v-validate="'required|max:15|min:4|alpha_spaces'"
+                  :counter="15"
                   :error-messages="errors.collect('nombre')"
-                  label="Name"
+                  label="Nombre de la categoria"
+                  placeholder="Nombre"
                   data-vv-name="nombre"
-                  required
                 ></v-text-field>
-
                 <!-- end formulario categoria -->
               </v-container>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
-                :disabled="!formValidated"
+                :disabled="errors.any()"
                 class="btn btn-primary"
                 data-dismiss="modal"
                 type="submit"
+                color="primary"
               >
                 <h5 v-if="form.id">Editar</h5>
                 <h5 v-else>Guardar</h5>
@@ -81,29 +79,33 @@ export default {
   methods: {
     //Guardar categoria
     Guardar(id) {
-      if (id == null) {
-        let url = "Categoria";
-        axios
-          .post(url, {
-            nombre: this.form.nombre
-          })
-          .then(response => {
-            this.$store.dispatch("Listarcategoria");
-            this.clear();
-          })
-          .catch(error => {
-            this.errors = error.response.data;
-          });
-      } else {
-        //Editar categoria
-        let url = "Categoria/" + id;
-        axios.put(url, this.form).then(response => {
-          this.clear();
-          this.$store.dispatch("Listarcategoria");
-          Swal.fire("Editar!", "Editado con exito!", "success");
-        });
-      }
-      this.$validator.validateAll();
+      this.$validator.validate().then(valid => {
+        if (valid) {
+          if (id == null) {
+            let url = "Categoria";
+            axios
+              .post(url, {
+                nombre: this.form.nombre
+              })
+              .then(response => {
+                this.$store.dispatch("Listarcategoria");
+                this.clear();
+                this.save = true;
+              })
+              .catch(error => {
+                this.errors = error.response.data;
+              });
+          } else {
+            //Editar categoria
+            let url = "Categoria/" + id;
+            axios.put(url, this.form).then(response => {
+              this.clear();
+              this.$store.dispatch("Listarcategoria");
+              Swal.fire("Editar!", "Editado con exito!", "success");
+            });
+          }
+        }
+      });
     },
     Mostrar(item) {
       this.dialog = true;

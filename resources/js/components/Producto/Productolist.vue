@@ -3,7 +3,7 @@
     <div v-if="loading">
       <Spiner></Spiner>
     </div>
-    <v-layout v-else>
+    <v-layout v-else align-center justify-center row>
       <v-flex lg12>
         <template>
           <v-card>
@@ -62,12 +62,8 @@
                   </v-btn>
                 </td>
                 <td class="text-xs-center">
-                  <v-btn @click="$emit('mostrar',props.item)" flat icon color="orange ">
-                    <v-icon>border_color</v-icon>
-                  </v-btn>
-                  <v-btn @click="Eliminar(props.item)" flat icon color="red darken-3">
-                    <v-icon>delete_forever</v-icon>
-                  </v-btn>
+                  <v-icon small class="mr-2" @click="$emit('mostrar',props.item)">edit</v-icon>
+                  <v-icon small @click="Eliminar(props.item)">delete</v-icon>
                 </td>
               </template>
               <template v-slot:no-results>

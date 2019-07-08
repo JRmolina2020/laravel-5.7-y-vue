@@ -26,8 +26,8 @@
         <slot name="contenido"></slot>
       </v-container>
     </v-content>
-    <!-- <v-footer color="indigo" app>
-      <span class="white--text">&copy; 2017</span>
+    <v-footer color="indigo" app>
+      <span class="white--text">&copy; JR MOLINA ING.</span>
     </v-footer>-->
   </v-app>
 </template>

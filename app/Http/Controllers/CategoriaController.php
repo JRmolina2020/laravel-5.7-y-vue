@@ -14,6 +14,13 @@ class CategoriaController extends Controller
         return $categoria;
     }
 
+    public function selectcategoria(Request $request){
+        if (!$request->ajax()) return redirect('/');
+        $categorias = Categoria::where('condicion', '=','1')
+        ->select('id','nombre')->orderBy('nombre','asc')->get();
+        return ['categorias'=>$categorias];
+    }
+
     public function store(Request $request)
     {
         if (!$request->ajax()) return redirect('/');

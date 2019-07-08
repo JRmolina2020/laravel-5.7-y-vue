@@ -20,17 +20,29 @@ class ProductoController extends Controller
                 'productos.descripcion',
                 'productos.imagen',
                 'categorias.nombre as nombre_categoria',
+                'categorias.id as categoria_id',
                 'productos.condicion'
             )->orderBy('productos.id', 'desc')->get();
         return $producto;
     }
     public function store(Request $request)
     {
-        //
+    if (!$request->ajax()) return redirect('/');
+    $producto = new Producto;
+    $producto->create($request->all());
     }
     public function update(Request $request, $id)
     {
-        //
+    if (!$request->ajax()) return redirect('/');
+        $producto = Producto::find($request->id);
+        $producto->categoria_id=$request->categoria_id;
+        $producto->codigo = $request->codigo;
+        $producto->nombre = $request->nombre;
+        $producto->stock = $request->stock;
+        $producto->descripcion = $request->descripcion;
+        $producto->precio_venta = $request->precio_venta;
+        $producto->condicion = '1';
+        $producto->save();
     }
     public function destroy(Request $request, $id)
     {

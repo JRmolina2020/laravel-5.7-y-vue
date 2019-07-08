@@ -19,7 +19,7 @@ class CreateProductosTable extends Migration
             $table->foreign('categoria_id')->references('id')->on('categorias');
             $table->string('codigo', 10);
             $table->string('nombre', 40);
-            $table->decimal('precio_venta', 10, 2);
+            $table->decimal('precio_venta', 10, 0);
             $table->integer('stock')->default('0');
             $table->text('descripcion');
             $table->integer('condicion')->default('1');

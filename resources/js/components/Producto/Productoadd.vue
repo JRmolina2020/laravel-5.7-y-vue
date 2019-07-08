@@ -3,9 +3,9 @@
     <v-layout align-center justify-center row>
       <v-dialog v-model="dialog" persistent max-width="800px">
         <template v-slot:activator="{ on }">
-          <div class="text-xs-center">
-            <v-btn dark v-on="on" @click="clear()" small color="primary">Nuevo</v-btn>
-          </div>
+          <v-btn fab bottom right color="red darken-2" dark fixed v-on="on" @click="clear()">
+            <v-icon>add</v-icon>
+          </v-btn>
         </template>
         <v-form @submit.prevent="Guardar(form.id)" autocomplete="off">
           <v-card>
@@ -17,7 +17,18 @@
               <v-container grid-list-md>
                 <!-- formulario producto -->
                 <v-layout>
-                  <v-flex lg4 md6 xs12 sm12>categoria</v-flex>
+                  <v-flex lg4 md6 xs12 sm12>
+                    <v-select
+                      :items="CategoriaSelect"
+                      item-text="nombre"
+                      v-validate="'required|'"
+                      item-value="id"
+                      label="Categoria del producto"
+                      :error-messages="errors.collect('categoria')"
+                      data-vv-name="categoria"
+                      v-model="form.categoria_id"
+                    ></v-select>
+                  </v-flex>
                   <v-flex lg4 md6 xs12 sm12>
                     <v-text-field
                       v-model="form.codigo"
@@ -44,12 +55,12 @@
                     <v-text-field
                       v-model="form.precio_venta"
                       v-validate="'required|max:9|min:3|numeric'"
-                      data-vv-as="field"
-                      :error-messages="errors.collect('precio_venta')"
+                      
+                      :error-messages="errors.collect('precio')"
                       :counter="9"
                       prefix="$"
                       label="Precio de venta"
-                      data-vv-name="precio_venta"
+                      data-vv-name="precio"
                     ></v-text-field>
                   </v-flex>
                   <v-flex lg4 md6 xs12 sm12>
@@ -122,36 +133,86 @@ export default {
   data() {
     return {
       dialog: false,
+      save: false,
+      CategoriaSelect: [],
       form: {
         id: null,
-        categoria_id: null,
+        categoria_id: "",
         codigo: null,
         nombre: "",
         precio_venta: null,
-        stock: 0,
+        stock: null,
         descripcion: "",
-        imagen: null
+        imagen: "https://www.dimm.com.uy/imgs/productos/productos35_30764.jpg"
       }
     };
   },
-
+  created() {
+    this.LlenaSelectcategoria();
+  },
   methods: {
     //Guardar categoria
     Guardar(id) {
       this.$validator.validate().then(valid => {
         if (valid) {
-          alert("bien");
+          if (id == null) {
+            let url = "Producto";
+            axios
+              .post(url, {
+                categoria_id: this.form.categoria_id,
+                codigo: this.form.codigo,
+                nombre: this.form.nombre,
+                precio_venta: this.form.precio_venta,
+                stock: this.form.stock,
+                descripcion: this.form.descripcion,
+                imagen: this.form.imagen
+              })
+              .then(response => {
+                this.$store.dispatch("Listarproducto");
+                this.clear();
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          } else {
+            let url = "Producto/" + id;
+            axios.put(url, this.form).then(response => {
+              this.clear();
+              this.$store.dispatch("Listarproducto");
+              Swal.fire("Editar!", "Editado con exito!", "success");
+            });
+          }
         }
       });
     },
     Mostrar(item) {
       this.dialog = true;
       this.form.id = item.id;
+      this.form.categoria_id = item.categoria_id;
       this.form.nombre = item.nombre;
+      this.form.codigo = item.codigo;
+      this.form.precio_venta = item.precio_venta;
+      this.form.stock = item.stock;
+      this.form.descripcion = item.descripcion;
+    },
+    LlenaSelectcategoria() {
+      axios
+        .get("Categoria/selectcategoria")
+        .then(response => {
+          this.CategoriaSelect = response.data.categorias;
+        })
+        .catch(e => {
+          console.log(e);
+        });
     },
     clear() {
-      this.form.nombre = "";
+      this.form.nombre = null;
       this.form.id = null;
+      this.form.codigo = null;
+      this.form.nombre = null;
+      this.form.precio_venta = null;
+      this.form.stock = null;
+      this.form.descripcion = null;
       this.dialog = false;
       this.$validator.reset();
     }

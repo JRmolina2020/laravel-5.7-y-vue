@@ -3,9 +3,9 @@
     <v-layout align-center justify-center row>
       <v-dialog v-model="dialog" persistent max-width="350px">
         <template v-slot:activator="{ on }">
-          <div class="text-xs-center">
-            <v-btn dark v-on="on" @click="clear()" small color="primary">Nuevo</v-btn>
-          </div>
+          <v-btn fab bottom right color="red darken-2" dark fixed v-on="on" @click="clear()">
+            <v-icon>add</v-icon>
+          </v-btn>
         </template>
         <v-form @submit.prevent="Guardar(form.id)" autocomplete="off">
           <v-card>

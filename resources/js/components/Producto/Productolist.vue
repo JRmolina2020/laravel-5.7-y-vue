@@ -19,24 +19,10 @@
             <v-data-table :headers="headers" :items="producto" :search="search">
               <template v-slot:items="props">
                 <td class="text-xs-center">{{ props.item.codigo }}</td>
+                <td class="text-xs-center">{{ props.item.nombre_categoria }}</td>
                 <td class="text-xs-center">{{ props.item.nombre }}</td>
                 <td class="text-xs-center">{{ props.item.precio_venta }}</td>
-                <td class="text-xs-center">
-                  <v-badge center>
-                    <template v-slot:badge>
-                      <span>{{ props.item.stock }}</span>
-                    </template>
-                    <v-icon
-                      v-if="props.item.stock>0 && props.item.stock <=4"
-                      color="orange lighten-1"
-                    >shopping_cart</v-icon>
-                    <v-icon
-                      v-else-if="props.item.stock>=5"
-                      color="green darken-1"
-                    >remove_shopping_cart</v-icon>
-                    <v-icon v-else color="red">remove_shopping_cart</v-icon>
-                  </v-badge>
-                </td>
+                <td class="text-xs-center">{{props.item.stock}}</td>
                 <td class="text-xs-center">{{ props.item.descripcion }}</td>
                 <td>
                   <v-img :src="props.item.imagen">
@@ -91,6 +77,7 @@ export default {
       search: "",
       headers: [
         { text: "Codigo", value: "codigo", align: "center" },
+        { text: "Categoria", value: "nombre_categoria", align: "center" },
         { text: "Nombre", value: "nombre", align: "center" },
         { text: "Precio", value: "precio_venta", align: "center" },
         { text: "Stock", value: "stock", align: "center" },
